@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>しばたの郷土館 料金シミュレーター</title>
+    <meta name="description" content="しばたの郷土館の施設利用料金を自動計算するツールです。">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <div class="background-mesh">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <div class="container glassmorphism-panel">
+        <header class="header">
+            <h1>しばたの郷土館 料金シミュレーター</h1>
+            <p>ご希望の条件を選択すると、利用料金の目安が計算されます。</p>
+        </header>
+
+        <main class="main-content">
+            <form id="calculator-form" class="form">
+
+                <div id="rooms-container">
+                    <!-- Dynamic Room Sections will be injected here -->
+                </div>
+
+                <div class="add-room-wrapper" style="text-align: center; margin: 32px 0;">
+                    <button type="button" id="add-room-btn" class="primary-btn"
+                        style="font-size: 1.1rem; padding: 12px 32px; background-color: #3b82f6; box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.4); border-radius: 8px;">＋
+                        別の部屋を追加する</button>
+                    <small class="helper-text"
+                        style="display:block; margin-top:8px;">※冷暖房のみ使用する場合は、追加した部屋の「施設利用料は計算しません」にチェックを入れてください。</small>
+                </div>
+
+                <!-- Global Options Section -->
+                <section class="form-section">
+                    <h2><span class="step-num">★</span>共通オプション</h2>
+
+                    <div class="toggles-group">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="out_of_town">
+                            <span class="slider"></span>
+                            <span class="toggle-label">町外者が利用する <small>(基本料金1.5倍)</small></span>
+                        </label>
+
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="for_profit">
+                            <span class="slider"></span>
+                            <span class="toggle-label">営利目的で利用する <small>(基本料金3倍)</small></span>
+                        </label>
+                    </div>
+                </section>
+
+                <!-- Reductions Section -->
+                <section class="form-section">
+                    <h2><span class="step-num">★</span>減免の適用</h2>
+                    <div class="input-group">
+                        <label for="reduction">対象となる減免区分（該当する場合のみ）</label>
+                        <select id="reduction">
+                            <!-- JavaScript populates this -->
+                        </select>
+                        <small class="helper-text">※減免が適用される場合、基本料金が免除/減額されます。<strong>冷暖房は実費のため減免対象外です。</strong></small>
+                    </div>
+                </section>
+
+                <div class="form-actions">
+                    <button type="submit" class="calculate-btn">
+                        <span class="btn-text">料金を再計算</span>
+                        <div class="loader" style="display:none;"></div>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Result Box -->
+            <aside class="result-box" id="result-box">
+                <div class="result-header">
+                    <h2>お見積り結果</h2>
+                    <span class="badge">参考価格</span>
+                </div>
+
+                <div class="result-content">
+                    <div class="price-row main-price">
+                        <span>合計金額</span>
+                        <div class="price-value"><span id="total-price">0</span>円</div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <div class="price-details" id="price-breakdown">
+                        <div class="price-row summary-row">
+                            <span>基本料金合計</span>
+                            <span><span id="base-price">0</span>円</span>
+                        </div>
+                        <div class="price-row highlight-discount summary-row" id="discount-row" style="display: none;">
+                            <span>→ 減免適用後</span>
+                            <span><span id="discounted-base">0</span>円</span>
+                        </div>
+                        <div class="price-row summary-row">
+                            <span>冷暖房料金合計 <small>(実費)</small></span>
+                            <span><span id="total-ac-price">0</span>円</span>
+                        </div>
+
+                        <div class="divider"></div>
+                        <h4>お部屋ごとの内訳</h4>
+                        <div id="room-details-container">
+                            <!-- JS injected details -->
+                        </div>
+                    </div>
+
+                    <div class="notes">
+                        <p>※実際の金額は職員の判断等をへて確定します。<br>※午前・午後・夜間をすべて選択、または全日を選択すると「全日料金」として計算されます。</p>
+                    </div>
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <!-- Template for Room -->
+    <template id="room-template">
+        <section class="form-section room-section">
+            <div class="room-header">
+                <h2><span class="step-num room-num">1</span>施設・時間・冷暖房 <span class="room-title-text"></span></h2>
+                <button type="button" class="remove-room-btn text-danger" style="display:none;">削除</button>
+            </div>
+
+            <div class="input-group mt-3">
+                <label>利用施設</label>
+                <select class="facility-select" required>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label class="custom-checkbox m-0">
+                    <input type="checkbox" class="ac-only-cb">
+                    <span class="checkmark"></span>
+                    <span class="label-text">冷暖房・ヒーターのみ使用する <small>(施設利用料は計算しません)</small></span>
+                </label>
+            </div>
+
+            <div class="slots-container mt-3">
+                <label class="font-semibold mb-2 block">利用時間帯</label>
+                <div class="checkbox-group slots-group">
+                    <label class="custom-checkbox">
+                        <input type="checkbox" class="slot-cb" value="morning">
+                        <span class="checkmark"></span>
+                        <span class="label-text">午前 <small>(9:00 - 12:00)</small></span>
+                    </label>
+                    <label class="custom-checkbox">
+                        <input type="checkbox" class="slot-cb" value="afternoon">
+                        <span class="checkmark"></span>
+                        <span class="label-text">午後 <small>(13:00 - 17:00)</small></span>
+                    </label>
+                    <label class="custom-checkbox">
+                        <input type="checkbox" class="slot-cb" value="night">
+                        <span class="checkmark"></span>
+                        <span class="label-text">夜間 <small>(17:00 - 21:00)</small></span>
+                    </label>
+                    <label class="custom-checkbox">
+                        <input type="checkbox" class="slot-cb" value="full">
+                        <span class="checkmark"></span>
+                        <span class="label-text">全日 <small>(9:00 - 21:00)</small></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="ac-container mt-3">
+                <label class="font-semibold mb-2 block">冷暖房・ヒーターの利用</label>
+                <div class="ac-list-container">
+                    <!-- JS will populate AC items here -->
+                </div>
+            </div>
+        </section>
+    </template>
+
+    <script src="./script.js"></script>
+</body>
+
+</html>
