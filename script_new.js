@@ -1,10 +1,10 @@
 const BASE_RATES = {
-    "集会室１": { "morning": 630, "afternoon": 730, "night": 840, "full": 1780 },
-    "体験学習室": { "morning": 630, "afternoon": 730, "night": 840, "full": 1780 },
-    "和室": { "morning": 730, "afternoon": 940, "night": 1050, "full": 2100 },
-    "多目的ホール": { "morning": 1360, "afternoon": 1470, "night": 1680, "full": 3570 },
-    "研修室": { "morning": 630, "afternoon": 730, "night": 840, "full": 1780 },
-    "如心庵": { "flat": 3150 },
+    "集会室１": { "morning": 760, "afternoon": 880, "night": 1010, "full": 2140 },
+    "体験学習室": { "morning": 760, "afternoon": 880, "night": 1010, "full": 2140 },
+    "和室": { "morning": 880, "afternoon": 1130, "night": 1260, "full": 2520 },
+    "多目的ホール": { "morning": 1640, "afternoon": 1770, "night": 2020, "full": 4290 },
+    "研修室": { "morning": 760, "afternoon": 880, "night": 1010, "full": 2140 },
+    "如心庵": { "flat": 3780 },
 };
 
 const GLOBAL_HEATERS = [
